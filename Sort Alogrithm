@@ -1,0 +1,156 @@
+namespace guo{
+	using std::vector;
+	using std::string;
+	template <typename T>
+
+	template <typename T>
+	void insertsort(vector<T> &data, std::function<bool (const T&lhs, const T&rhs)> comp){
+		for (size_t i = 1; i < data.size(); i++){
+			T temp = data[i];
+			int j = i - 1;
+			while (j >= 0 && comp(temp, data[j])){
+				data[j + 1] = data[j];
+				j--;
+			}
+			data[j + 1] = temp;
+		}
+	}
+
+
+	template <class T>
+	void shellInsertSort(vector<T> &data, bool(*comp) (const T&, const T&)){
+		vector<unsigned int> dk{5, 3, 1};
+		for (auto ele : dk){
+			for (auto i = ele; i < data.size(); i += ele){
+				T temp = data[i];
+				int j = i - ele;
+				while (j >= 0 && comp(temp, data[j])){
+					data[j + ele] = data[j];
+					j -= ele;
+				}
+				data[j + ele] = temp;
+			}
+		}
+	}
+
+	template <typename T>
+	void selectSort(vector<T> &data, std::function<bool(const T &lhs, const T &rhs)> comp){
+		for (size_t i = 0; i < data.size(); i++){
+			int min = i;
+			for (size_t j = i + 1; j < data.size(); j++){
+				if (!comp(data[min], data[j])){
+					min = j;
+				}
+			}
+			T temp = data[min];
+			data[min] = data[i];
+			data[i] = temp;
+		}
+	}
+
+
+	template <typename T>
+	void heapAdjust(vector<T> &data, int s, int e,std::function<bool(const T &lhs, const T &rhs)> comp){
+		T temp = data[s];
+		for (int j = s == 0 ? 1 : 2 * s; j < e; j *= 2){
+			if (j < m - 1 && !comp(data[j], data[j + 1])) j++;
+			if (comp(temp, data[j])) break;
+			data[s] = data[j];
+			s = j;
+		}
+		data[s] = temp;
+	}
+
+	template <typename T>
+	void heapSort(vector<T> &data, std::function<bool(const T &lhs, const T &rhs)> comp){
+		for (int i = data.size() / 2 - 1; i >= 0; i--){
+			heapAdjust<T>(data, i, data.size(), comp);
+		}
+		for (int i = data.size() - 1; i >= 0; i--){
+			T temp = data[i];
+			data[i] = data[0];
+			data[0] = temp;
+			heapAdjust<T>(data, 0, data.size(), comp);
+		}
+	}
+
+	template <typename T>
+	void bubbleSort(vector <T> &data, std::function<bool(const T &lhs, const T &rhs)> comp){
+		for (size_t i = 1; i < data.size(); i++){
+			int j = 0, end = data.size() - i;
+			while (j < end){
+				if (!comp(data[j], data[j + 1])){
+					T temp = data[j];
+					data[j] = data[j + 1];
+					data[j + 1] = temp;
+				}
+				j++;
+			}
+		}
+	}
+
+	template <typename T>
+	int qpartition(vector<T> &data, int m, int n, std::function<bool (const T &lhs, const T &rhs)> comp){
+		T temp = data[m];
+		while (m < n){
+			while (m < n && !comp(data[n], temp)) n--;
+			data[m] = data[n];
+			while (m < n && comp(data[m], temp)) m++;
+			data[n] = data[m];
+		}
+		data[m] = temp;
+		return m;
+	}
+
+	template <typename T>
+	void qSort(vector<T> &data, int m, int n, std::function<bool(const T &lhs, const T &rhs)> comp){
+		if (m < n){
+			int pi = qpartition<T>(data, m, n, comp);
+			qSort<T>(data, m, pi - 1, comp);
+			qSort<T>(data, pi + 1, n, comp);
+		}
+	}
+
+	template <typename T>
+	void quickSort(vector<T> &data, std::function<bool(const T &lhs, const T &rhs)> comp){
+		qSort<T>(data, 0, data.size() - 1, comp);
+	}
+
+
+	template <typename T>
+	void merge(vector<T> &data, vector<T> &temp, int low, int mid,int high, std::function<bool(const T &lhs, const T &rhs)> comp){
+		int i = low, j = mid + 1, k = low;
+		while(i <= mid && j <= high){
+			if (comp(data[i], data[j])){
+				temp[k++] = data[i++];
+			}else{
+				temp[k++] = data[j++];
+			}
+		}
+		while (i <= mid) temp[k++] = data[i++];
+		while (j <= high) temp[k++] = data[j++];
+		while (low < k){
+			data[low] = temp[low];
+			low++;
+		}
+	}
+
+	template <typename T>
+	void mSort(vector<T> &data, vector<T> &temp, int low, int high, std::function<bool(const T &lhs, const T &rhs)> comp){
+		if (low == high){
+			data[low] = data[low];
+		}
+		else{
+			int mid = low + (high - low) / 2;
+			mSort<T>(data, temp, low, mid, comp);
+			mSort<T>(data, temp, mid + 1, high, comp);
+			merge<T>(data, temp, low, mid, high, comp);
+		}
+	}
+
+	template <typename T>
+	void mergeSort(vector<T> &data, std::function<bool(const T &lhs, const T &rhs)> comp){
+		vector<T> data2(data);
+		mSort<T>(data, data2, 0, data.size() - 1, comp);
+	}
+}
