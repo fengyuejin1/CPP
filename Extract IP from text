@@ -1,0 +1,13 @@
+#include <iostream>
+#include <regex>
+#include <string>
+#include <iterator>
+#include <algorithm>
+using namespace std;
+int main(){
+	string text((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());
+	copy(sregex_token_iterator(text.begin(), text.end(), 
+		 regex("((([1-9]?|1\\d)\\d|2([0-4]\\d|5[0-5]))\\.){3}(([1-9]?|1\\d)\\d|2([0-4]\\d|5[0-5]))")), sregex_token_iterator(),
+		 ostream_iterator<string>(std::cout, "\n"));
+	return 0;
+}
