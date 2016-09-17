@@ -1,0 +1,53 @@
+/*通常大家都知道父类构造方法先与子类的构造方法执行，
+ *但是子类中的成员变量初始化的时间与先与子类的构造方法，
+ *那么子类成员变量初始化与父类构造方法执行时间是怎样呢。
+ *结论是：父类构造方法，子类成员变量初始化，子类构造方法，
+ *       子类析构函数，子类成员变量析构，父类析构函数。
+ */
+ 
+ #include <iostream>
+#include <regex>
+#include <string>
+#include <iterator>
+#include <algorithm>
+using namespace std;
+
+class A{
+public:
+	A(){
+		cout << "A ctor" << endl;
+	}
+
+	~A(){
+		cout << "A dtor" << endl;
+	}
+};
+
+class B{
+public:
+	B(){
+		cout << "B ctor" << endl;
+	}
+
+	~B(){
+		cout << "B dtor" << endl;
+	}
+};
+
+class C : public B{
+private:
+	A a;
+public:
+	C(){
+		cout << "C ctor" << endl;
+	}
+	~C(){
+		cout << "C dtor" << endl;
+	}
+};
+
+
+int main(){
+	C c;
+	return 0;
+}
