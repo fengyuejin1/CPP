@@ -1,0 +1,57 @@
+/*下面代码打印结果为：12， 24， 24， 40
+ *Point2d: 12，包含{int x : 4, int y : 4, vptr : 4}
+ *Point3d: 24，包含{Point2d : 12, int z : 4, Point2d * :4, vptr : 4}
+ *Vertex : 24，包含{Point2d : 12, Vertex* next : 4, Point2d * :4, vptr : 4}
+ *Vertex3d : 40，包含{Point2d : 12, int z : 4, Point2d * : 4, vptr : 4, Vertex* next : 4, Point2d * : 4, vptr : 4 , float : 4}
+ *
+ */
+
+#include <iostream>
+#include <regex>
+#include <string>
+#include <iterator>
+#include <algorithm>
+using namespace std;
+
+class Point2d{
+private:
+	int x;
+	int y;
+public:
+	~Point2d(){	}
+	virtual void drawMe(){}
+};
+
+class Point3d : virtual public Point2d{
+private:
+	int z;
+public:
+	~Point3d(){ }
+	virtual void drawMe(){}
+};
+
+class Vertex : virtual public Point2d{
+private:
+	Vertex *next;
+public:
+	~Vertex(){}
+	virtual void show(){}
+};
+
+class Vertex3d : public Point3d, Vertex{
+private:
+	float mumble;
+public:
+	~Vertex3d(){
+
+	}
+};
+
+int main(){
+	cout << sizeof(Point2d) << endl;
+	cout << sizeof(Point3d) << endl;
+	cout << sizeof(Vertex) << endl;
+	cout << sizeof(Vertex3d) << endl;
+
+	return 0;
+}
