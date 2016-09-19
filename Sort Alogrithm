@@ -53,7 +53,7 @@ namespace guo{
 	void heapAdjust(vector<T> &data, int s, int e,std::function<bool(const T &lhs, const T &rhs)> comp){
 		T temp = data[s];
 		for (int j = s == 0 ? 1 : 2 * s; j < e; j *= 2){
-			if (j < m - 1 && !comp(data[j], data[j + 1])) j++;
+			if (j < e - 1 && !comp(data[j], data[j + 1])) j++;
 			if (comp(temp, data[j])) break;
 			data[s] = data[j];
 			s = j;
@@ -70,7 +70,7 @@ namespace guo{
 			T temp = data[i];
 			data[i] = data[0];
 			data[0] = temp;
-			heapAdjust<T>(data, 0, data.size(), comp);
+			heapAdjust<T>(data, 0, i, comp);
 		}
 	}
 
