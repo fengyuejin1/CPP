@@ -1,0 +1,24 @@
+#include <io.h>
+void transerFiles(string path, vector<string> &files){
+	_finddata_t data;
+	string sufpath = path.substr(0, path.find_last_of("\\")) + "\\";
+	long handler = 0;
+	if ((handler = _findfirst(path.c_str(), &data)) == -1L){
+		return;
+	}
+	else{
+		do{
+			//过滤掉当前目录和上一级目录，避免死循环
+			if (string(data.name) == "." || string(data.name) == ".."){
+				continue;
+			}
+			//如果是子目录，递归调用，搜索文件
+			if (data.attrib == _A_SUBDIR){
+				transerFiles(sufpath + data.name + "\\*.*", files);
+			}
+			else{
+				files.push_back(sufpath + data.name); //如果是文件，则保持
+			}
+		} while ((_findnext(handler, &data)) == 0L); //搜索下一个文件
+	}
+}
