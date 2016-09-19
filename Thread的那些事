@@ -1,0 +1,40 @@
+/*
+ *output: 
+ *  A ctor
+ *  A copy ctor
+ *  A move copy ctor
+ *  A move copy ctor
+ *  A move copy ctor
+ *  ----------------
+ *  A dtor
+ *  A dtor
+ *  A dtor
+ *  A dtor
+ */
+#include <thread>
+class A{
+public:
+	A(){
+		cout << "A ctor" << endl;
+	}
+	A(const A & p){
+		cout << "A copy ctor" << endl;
+	}
+	A(const A && p){
+		cout << "A move copy ctor" << endl;
+	}
+	~A(){
+		cout << "A dtor" << endl;
+	}
+	void operator()(){
+		cout << "-----------" << endl;
+	}
+};
+
+
+int main(){
+	A a;
+	thread th((a));
+	th.join();
+	return 0;
+}
