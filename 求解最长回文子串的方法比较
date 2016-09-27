@@ -1,0 +1,158 @@
+/*
+ *在此列举4中不同的方法：
+ *1、暴力法
+ *2、动态规划
+ *3、中心拓展
+ *4、manacher算法
+ */
+ 
+ 
+ /*
+  *暴力方法通过列举字符串中所有的字串，对字串进行一一判断是否为回文，同时记录和更新最长的回文记录
+  *时间复杂度为O(n^3).
+  *
+  */
+  
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int max = 1, start = 0;
+        for(int i = 0; i < s.size(); i++){
+            for(int j = i + 1; j < s.size(); j++){
+                bool flag = true;
+                for(int m = i, n = j; m < n; m++, n--){
+                    if(s[m] != s[n]){
+                        flag = false;
+                        break;
+                    }
+                }
+                if(flag && (j - i + 1) > max){
+                    max = (j - i + 1);
+                    start = i;
+                }
+            }
+        }
+        return s.substr(start, max);
+    }
+};
+
+
+
+
+/*
+ *动态规划
+ *由于暴力方法需要对字串进行一一判断是否为回文，这需要花费O(n)的时间进行判断，使用动态规矩，记录前面判断的字串
+ *回文结果，因此时间复杂度可以变为O(n^2)
+ *
+ */
+ 
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int max = 1;
+        int start = 0;
+        vector<vector<bool>> datas(s.size(), vector<bool>(s.size(), false));
+        for(int i = 0; i < s.size(); i++){
+            datas[i][i] = true;
+            if(i!=0){
+                if(s[i-1]==s[i]){
+                    max = 2;
+                    start = i - 1;
+                    datas[i-1][i] = true;
+                }
+            }
+        }
+
+        for(int len = 3; len <= s.size(); len++){
+            for(int i = 0; i < s.size() - len + 1; i++){
+                int j = i + len - 1;
+                if(s[i]==s[j]&&datas[i+1][j-1] == true){
+                    datas[i][j] = true;
+                    max = len;
+                    start = i;
+                }
+            }
+        }
+        return s.substr(start, max);
+    }
+};
+
+
+/*
+ *中心拓展法
+ *如果以某个字符为中心，先两边拓展回文，同时记录和更新最长的回文长度，因此相对于动态规划的方法，虽然时间复杂度
+ *仍然为O(n^2)，但是不需要额外的内存。
+ *
+ */
+ 
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int max = 1, start = 0;
+        for(int i = 0; i < s.size() - 1; i++){
+            for(int j = 1; i - j >= 0 && i + j <s.size(); j++){
+                if(s[i-j]==s[i+j]&&max < (2 * j + 1)){
+                    max = 2 * j + 1;
+                    start = i - j;
+                }
+                if(s[i-j]!=s[i+j]) break;
+            }
+            for(int m = i, n = i+1; m >= 0 && n < s.size(); m--, n++){
+                if(s[m] == s[n] && max < (n - m + 1)){
+                    max = n - m + 1;
+                    start = m;
+                }
+                if(s[m]!=s[n]) break;
+            }
+        }
+        return s.substr(start, max);
+    }
+};
+ 
+ 
+ /*
+  *Manacher方法
+  *通过回文自身的对称性和动态规划方法计算中心点的回文长度
+  *时间复杂度为O(n)
+  *
+  */
+  
+  
+class Solution {
+public:
+    string longestPalindrome(string s) {
+    	string newstr;
+    	for (int i = 0; i < s.size(); i++){
+    		newstr = newstr + "#";
+    		newstr += s[i];
+    	}
+    	newstr += "#";
+    	vector<int> p(newstr.size(), 0);
+    	int mxid = 0, id = 0;
+    	int ans = 0;
+    	for (int i = 0; i < newstr.size(); i++){
+    		if (mxid > i){
+    			p[i] = min(p[2 * id - i], mxid - i);
+    		}
+    		else{
+    			p[i] = 1;
+    		}
+    		while (i - p[i] >= 0 && i + p[i] < newstr.size() && newstr[i - p[i]] == newstr[i + p[i]]) p[i]++;
+    		if (p[i] > mxid){
+    			mxid = p[i] + i;
+    			id = i;
+    		}
+    		if (p[i] > p[ans]){
+    			ans = i;
+    		}
+    	}
+    	return s.substr(ans / 2 - (p[ans] - 1) / 2, p[ans] - 1);
+    }
+};
+ 
+ 
+
+
+
+
+
