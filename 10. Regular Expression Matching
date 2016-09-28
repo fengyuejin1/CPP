@@ -1,0 +1,33 @@
+/*
+ *使用递归的方式求解匹配字符串，如果不是'*'字符，则每次匹配单词字符
+ *如果是'*'字符，则判断，*字符匹配0个字符，能否成功，匹配1个字符能否成功，一次下去。
+ *
+ *
+ */
+ 
+class Solution {
+public:
+    bool matchFirst(const string &lhs, int ls, const string &rhs, int rs){
+        if(ls < lhs.size() && rs < rhs.size()) return lhs[ls] == rhs[rs] || rhs[rs] == '.';
+        else if(ls == lhs.size() && rs == rhs.size()) return true;
+        else return false;
+    }
+    bool isMatch(const string &lhs, int ls, const string &rhs, int rs){
+        if(rhs.size() == rs) return lhs.size() == ls;
+        if(rs + 1 < rhs.size() && rhs[rs + 1] == '*'){
+            if(isMatch(lhs, ls, rhs, rs + 2)) return true;
+            else{
+                while(matchFirst(lhs, ls, rhs, rs)){
+                    if(isMatch(lhs, ++ls, rhs, rs + 2)) return true;
+                }
+            }
+        }else{
+            if(!matchFirst(lhs, ls, rhs, rs)) return false;
+            else return isMatch(lhs, ++ls, rhs, ++rs);
+        }
+        return false;
+    }
+    bool isMatch(const string &lhs, const string &rhs){
+    	return isMatch(lhs, 0, rhs, 0);
+    }
+};
