@@ -1,0 +1,19 @@
+为了学习Linux，特地的买了鸟哥的Linux私房菜准确从基础开始实践学习。对于我这次初学者，为了能够正常办公，
+又能学习新知识，最好的办法就是安装双系统。
+下面写一下自己安装的心得。
+1、首先，在win7系统下面，对磁盘进行管理，得到一个可用的磁盘分区，用于centos系统安装。（点击计算机、管理、磁盘、压缩）
+2、通过UstralSO软件制作U盘启动盘，用于centos安装。
+3、插入U盘，在电脑启动是，按F12(不同电脑，快捷键可能不一致)进入boot界面，进行安装centos，在安装过程中，在选择centos
+安装位置时，特别注意，要选择第一步中分成的可用分区。
+4、等centos安装完成之后，启动电脑，发现没有window 7 的选择项，只有centos 7的。这是系统没有找到window 7的引导文件，
+不用急，仍然进入centos系统，然后以root权限，编辑/boot/grub2/grub.cfg配置文件，找到文件中的menuentry位置，在后面
+增加一个系统引导项：
+menuentry 'Windows 7'{  
+        insmod part_msdos  
+        insmod ntfs  
+        insmod ntldr  
+        set root=(hd0,1)  
+        chainloader +1  
+        boot  
+}  
+5、重启系统，就会发现在centos 7后面，出现了window 7系统。
